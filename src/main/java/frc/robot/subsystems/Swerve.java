@@ -1,10 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 
-import frc.robot.SwerveModule;
 import frc.robot.Constants;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -15,15 +12,18 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+
+
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    public PigeonIMU gyro;
+    private AHRS IMU;
 
     public Swerve() {
-        gyro = new PigeonIMU(Constants.Swerve.pigeonID);
-        gyro.configFactoryDefault();
-        zeroGyro();
+        IMU = new AHRS(SPI.Port.kMXP);
+        IMU.zeroYaw();
         
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw());
 
@@ -81,14 +81,12 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
-    public void zeroGyro(){
-        gyro.setYaw(0);
+    public Rotation2d getYaw() {
+        return IMU.getRotation2d();        
     }
 
-    public Rotation2d getYaw() {
-        double[] ypr = new double[3];
-        gyro.getYawPitchRoll(ypr);
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+    public void zeroIMU(){
+        this.IMU.zeroYaw();
     }
 
     @Override
