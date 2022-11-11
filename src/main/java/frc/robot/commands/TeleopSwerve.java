@@ -5,6 +5,8 @@ import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 
 public class TeleopSwerve extends CommandBase {
@@ -37,14 +39,22 @@ public class TeleopSwerve extends CommandBase {
 
     @Override
     public void execute() {
-        double yAxis = -controller.getRawAxis(translationAxis);
+        double yAxis = controller.getRawAxis(translationAxis);
         double xAxis = -controller.getRawAxis(strafeAxis);
-        double rAxis = -controller.getRawAxis(rotationAxis);
+        double rAxis = controller.getRawAxis(rotationAxis);
+
+        SmartDashboard.putNumber("raw xAxis", xAxis);
+        SmartDashboard.putNumber("raw yAxis", yAxis);
+        SmartDashboard.putNumber("raw rAxis", rAxis);
         
         /* Deadbands */
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
+
+        SmartDashboard.putNumber("new xAxis", xAxis);
+        SmartDashboard.putNumber("new yAxis", yAxis);
+        SmartDashboard.putNumber("new rAxis", rAxis);
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
