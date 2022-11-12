@@ -9,11 +9,11 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static final double stickDeadband = 0.25;
+    public static final double stickDeadband = 0.1;
 
     public static final class Swerve {
         public static final int pigeonID = 1;
-        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+        public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(17);
@@ -45,15 +45,15 @@ public final class Constants {
         public static final boolean driveEnableCurrentLimit = true;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.1;
+        public static final double angleKP = 0.25;
         public static final double angleKI = 0.0;
-        public static final double angleKD = 0.0;
+        public static final double angleKD = 0.1785;
         public static final double angleKF = 0.0;
 
         /* Drive Motor PID Values */
         public static final double driveKP = 0.01;
         public static final double driveKI = 0.0;
-        public static final double driveKD = 0.0;
+        public static final double driveKD = 0.01;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values */
@@ -71,7 +71,7 @@ public final class Constants {
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = true;
-        public static final boolean angleMotorInvert = false;
+        public static final boolean angleMotorInvert = true;
 
         /* Angle Encoder Invert */
         public static final boolean canCoderInvert = false;
