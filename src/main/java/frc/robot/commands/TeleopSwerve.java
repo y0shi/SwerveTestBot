@@ -21,11 +21,20 @@ public class TeleopSwerve extends CommandBase {
     private int translationAxis;
     private int strafeAxis;
     private int rotationAxis;
+    private int lBumperChannel;
+    private int rBumperChannel;
+
+    private static final Translation2d center = new Translation2d();
+    private static final Translation2d rearLeftCorner = new Translation2d(-Constants.Swerve.trackWidth/2, -Constants.Swerve.wheelBase/2);
+    private static final Translation2d rearRightCorner = new Translation2d(Constants.Swerve.trackWidth/2, -Constants.Swerve.wheelBase/2);
+
+    // current center of rotation
+    private Translation2d cor = center;
 
     /**
      * Driver control
      */
-    public TeleopSwerve(Swerve s_Swerve, Joystick controller, int translationAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
+    public TeleopSwerve(Swerve s_Swerve, Joystick controller, int translationAxis, int strafeAxis, int rotationAxis, int lBumperChannel, int rBumperChannel, boolean fieldRelative, boolean openLoop) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -33,6 +42,8 @@ public class TeleopSwerve extends CommandBase {
         this.translationAxis = translationAxis;
         this.strafeAxis = strafeAxis;
         this.rotationAxis = rotationAxis;
+        this.lBumperChannel = lBumperChannel;
+        this.rBumperChannel = rBumperChannel;
         this.fieldRelative = fieldRelative;
         this.openLoop = openLoop;
     }
@@ -42,6 +53,19 @@ public class TeleopSwerve extends CommandBase {
         double yAxis = -controller.getRawAxis(translationAxis);
         double xAxis = -controller.getRawAxis(strafeAxis);
         double rAxis = -controller.getRawAxis(rotationAxis);
+        boolean lBumper = controller.getRawButton(lBumperChannel);
+        boolean rBumper = controller.getRawButton(rBumperChannel);
+
+        if (lBumper){
+            cor = rearLeftCorner;
+            rAxis = -1;
+        } else if (rBumper) {
+            cor = rearRightCorner;
+            rAxis = 1;
+        } else {
+            cor = center;
+        }
+
 
         SmartDashboard.putNumber("raw xAxis", xAxis);
         SmartDashboard.putNumber("raw yAxis", yAxis);
@@ -58,6 +82,7 @@ public class TeleopSwerve extends CommandBase {
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
-        s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
+        s_Swerve.drive(translation, rotation, fieldRelative, openLoop, cor);
     }
 }
+
