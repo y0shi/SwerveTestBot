@@ -87,7 +87,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        return IMU.getRotation2d();        
+        Rotation2d yaw = IMU.getRotation2d();
+        if (Constants.Swerve.invertGyro) {
+            yaw = yaw.times(-1);
+        }
+        return yaw;
     }
 
     public void zeroIMU(){
